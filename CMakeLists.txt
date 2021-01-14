@@ -227,6 +227,9 @@ message(STATUS "Compile for OpenSSL 1.0 API - ${CIVETWEB_SSL_OPENSSL_API_1_0}")
 option(CIVETWEB_SSL_OPENSSL_API_1_1 "Use the OpenSSL 1.1 API" ON)
 message(STATUS "Compile for OpenSSL 1.1 API - ${CIVETWEB_SSL_OPENSSL_API_1_1}")
 
+option(CIVETWEB_ENABLE_MBEDTLS "Enables the secure socket layer with mbedTLS" OFF)
+message(STATUS "SSL support - ${CIVETWEB_ENABLE_MBEDTLS}")
+
 # Dynamically load or link the SSL libraries
 cmake_dependent_option(
   CIVETWEB_ENABLE_SSL_DYNAMIC_LOADING "Dynamically loads the SSL library rather than linking it" ON
@@ -533,7 +536,9 @@ endif()
 if(CIVETWEB_SSL_OPENSSL_API_1_0 AND CIVETWEB_SSL_OPENSSL_API_1_1)
   message(FATAL_ERROR "Multiple SSL API versions defined")
 endif()
-
+if (CIVETWEB_ENABLE_MBEDTLS)
+  add_definitions(-DNO_SSL -DUSE_MBEDTLS)
+endif()
 add_definitions(-DUSE_STACK_SIZE=${CIVETWEB_THREAD_STACK_SIZE})
 
 # Set 32 or 64 bit environment
